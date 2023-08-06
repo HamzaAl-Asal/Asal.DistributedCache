@@ -1,4 +1,5 @@
 ﻿using Asal.DistributedCache.Interfaces;
+using Asal.DistributedCache.Options;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System;
@@ -9,6 +10,7 @@ namespace Asal.DistributedCache.Services
     public class AsalDistributedCacheService : IAsalDistributedMemoryCache
     {
         private readonly IDistributedCache distributedCache;
+
         public AsalDistributedCacheService(IDistributedCache distributedCache)
         {
             this.distributedCache = distributedCache;
@@ -38,26 +40,22 @@ namespace Asal.DistributedCache.Services
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        public void Set(string key, object data, int cacheTimeInMinutes = 60)
+        public void Set(string key, object data, AsalDistributedCacheOptions cacheOptions)
         {
             var json = JsonConvert.SerializeObject(data);
 
-            var expiresIn = TimeSpan.FromMinutes(cacheTimeInMinutes);
-
             var options = new DistributedCacheEntryOptions()
-                .SetAbsoluteExpiration(expiresIn);
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheOptions.CacheInMinutes));
 
             distributedCache.SetString(key, json, options);
         }
 
-        public async Task SetAsync(string key, object data, int cacheTimeInMinutes = 60)
+        public async Task SetAsync(string key, object data, AsalDistributedCacheOptions cacheOptions)
         {
             var json = JsonConvert.SerializeObject(data);
 
-            var expiresIn = TimeSpan.FromMinutes(cacheTimeInMinutes);
-
             var options = new DistributedCacheEntryOptions()
-                .SetAbsoluteExpiration(expiresIn);
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheOptions.CacheInMinutes));
 
             await distributedCache.SetStringAsync(key, json, options);
         }
@@ -72,7 +70,7 @@ namespace Asal.DistributedCache.Services
             await distributedCache.RemoveAsync(key);
         }
 
-        public bool IsExistedKey(string key)
+        public bool IsExistsKey(string key)
         {
             var result = distributedCache.Get(key);
 
@@ -84,7 +82,7 @@ namespace Asal.DistributedCache.Services
             return true;
         }
 
-        public async Task<bool> IsExistedKeyAsync(string key)
+        public async Task<bool> IsExistsKeyAsync(string key)
         {
             var result = await distributedCache.GetAsync(key);
 

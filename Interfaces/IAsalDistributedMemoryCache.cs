@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Asal.DistributedCache.Options;
+using System.Threading.Tasks;
 
 namespace Asal.DistributedCache.Interfaces
 {
@@ -7,13 +8,13 @@ namespace Asal.DistributedCache.Interfaces
         T Get<T>(string key);
         Task<T> GetAsync<T>(string key);
 
-        void Set(string key, object data, int cacheTimeInMinutes = 60);
-        Task SetAsync(string key, object data, int cacheTimeInMinutes = 60);
+        void Set(string key, object data, AsalDistributedCacheOptions cacheOptions);
+        Task SetAsync(string key, object data, AsalDistributedCacheOptions cacheOptions);
 
         void Remove(string key);
         Task RemoveAsync(string key);
 
-        bool IsExistedKey(string key);
-        Task<bool> IsExistedKeyAsync(string key);
+        bool IsExistsKey(string key);
+        Task<bool> IsExistsKeyAsync(string key);
     }
 }

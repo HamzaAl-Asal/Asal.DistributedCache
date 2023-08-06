@@ -11,7 +11,7 @@ namespace Asal.DistributedCache
         public static void AddAsalDistributedCache(this IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
-            services.TryAddTransient<IAsalDistributedMemoryCache, AsalDistributedCacheService>();
+            services.TryAddSingleton<IAsalDistributedMemoryCache, AsalDistributedCacheService>();
         }
     }
 }
